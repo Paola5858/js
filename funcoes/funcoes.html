@@ -160,7 +160,21 @@
             transition: border-color .2s;
         }
 
-        input[type="number"]:focus {
+        input[type="text"] {
+            flex: 1;
+            min-width: 120px;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: .9rem;
+            padding: .6rem .9rem;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
             border-color: var(--accent);
         }
 
@@ -236,6 +250,16 @@
             padding: 0 .2rem;
         }
 
+        /* === mini explicação === */
+        .explain {
+            font-family: var(--mono);
+            font-size: .72rem;
+            color: var(--muted);
+            line-height: 1.6;
+            border-left: 2px solid var(--border);
+            padding-left: .8rem;
+        }
+
         /* === rodapé === */
         footer {
             text-align: center;
@@ -251,7 +275,7 @@
 <header>
     <div class="tag">SENAI · JS · Funções</div>
     <h1>Javascript<br><span>Funções</span></h1>
-    <p class="subtitle">// sem retorno · com retorno · anônima · arrow</p>
+    <p class="subtitle">// sem retorno · com retorno · anônima · arrow · date</p>
 </header>
 
 <!-- BLOCO 1: sem parâmetros -->
@@ -267,6 +291,7 @@
 <span class="kw">function</span> <span class="fn">menssagem</span>() {
   document.write(<span class="str">"Olá Mundo! &lt;br&gt;"</span>);
 }</pre>
+        <p class="explain">Executa uma ação diretamente, sem devolver nenhum valor para quem a chamou.</p>
         <button onclick="rodarMensagem()">▶ Executar</button>
         <div class="resultado" id="res-mensagem">aguardando...</div>
     </div>
@@ -280,6 +305,7 @@
 <span class="kw">function</span> <span class="fn">msgRetorno</span>() {
   <span class="kw">return</span> <span class="str">"Olá mundo com retorno!"</span>;
 }</pre>
+        <p class="explain">Usa <code>return</code> para devolver um valor — assim o resultado pode ser guardado ou exibido onde quiser.</p>
         <button class="btn-pink" onclick="rodarMsgRetorno()">▶ Executar</button>
         <div class="resultado pink" id="res-retorno">aguardando...</div>
     </div>
@@ -299,6 +325,7 @@
   document.write(<span class="str">"A soma é: "</span>
     + (numero1 + numero2));
 }</pre>
+        <p class="explain">Recebe dois números como parâmetros e exibe o resultado direto, sem retornar nada.</p>
         <div class="input-row">
             <input type="number" id="s1" value="5" placeholder="Nº 1">
             <input type="number" id="s2" value="10" placeholder="Nº 2">
@@ -316,6 +343,7 @@
   <span class="kw">return</span> <span class="str">"Soma com retorno: "</span>
     + (numero1 + numero2);
 }</pre>
+        <p class="explain">Combina parâmetros com <code>return</code>: recebe os valores, processa e devolve o resultado para ser usado livremente.</p>
         <div class="input-row">
             <input type="number" id="sr1" value="5" placeholder="Nº 1">
             <input type="number" id="sr2" value="10" placeholder="Nº 2">
@@ -340,6 +368,7 @@
   <span class="kw">return</span> <span class="str">"Sou uma Função Anônima"</span>;
 }
 anonima();</pre>
+        <p class="explain">Não tem nome próprio — fica guardada numa variável e é chamada por ela. Útil para callbacks e atribuições.</p>
         <button class="btn-blue" onclick="rodarAnonima()">▶ Executar</button>
         <div class="resultado blue" id="res-anonima">aguardando...</div>
     </div>
@@ -355,8 +384,162 @@ anonima();</pre>
   <span class="str">"Uma função de flecha!"</span>;
 
 funcaodeflecha();</pre>
+        <p class="explain">Sintaxe curta com <code>=&gt;</code>. Se o corpo for uma única expressão, dispensa <code>{}</code> e o <code>return</code> é implícito.</p>
         <button class="btn-blue" onclick="rodarFlecha()">▶ Executar</button>
         <div class="resultado blue" id="res-flecha">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 4: Date -->
+<p class="section-title">// 04 — objeto date</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.35s">
+        <div class="card-header">
+            <span class="badge badge-green">new Date()</span>
+        </div>
+        <h2>let hora = new Date().getHours()</h2>
+        <pre><span class="cm">// captura a hora atual do sistema</span>
+<span class="kw">let</span> hora = <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">getHours</span>();
+
+<span class="kw">function</span> <span class="fn">saudacao</span>() {
+  <span class="kw">if</span> (hora &lt; <span class="num">12</span>) {
+    console.<span class="fn">log</span>(<span class="str">"Bom dia, Paola!"</span>);
+  } <span class="kw">else if</span> (hora &lt; <span class="num">18</span>) {
+    console.<span class="fn">log</span>(<span class="str">"Boa tarde, Paola!"</span>);
+  } <span class="kw">else</span> {
+    console.<span class="fn">log</span>(<span class="str">"Boa noite, Paola!"</span>);
+  }
+}</pre>
+        <p class="explain"><code>new Date()</code> cria um objeto com a data e hora atual do sistema. <code>getHours()</code> retorna a hora em formato 24h (0–23). O <code>if / else if / else</code> verifica a faixa e exibe a saudação certa para Paola.</p>
+        <button onclick="rodarSaudacao()">▶ Executar</button>
+        <div class="resultado" id="res-saudacao">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 5: loja aberta -->
+<p class="section-title">// 05 — verificar loja aberta</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.4s">
+        <div class="card-header">
+            <span class="badge badge-pink">new Date()</span>
+        </div>
+        <h2>function verificarLojaAberta()</h2>
+        <pre><span class="cm">// verifica dia e hora para saber se a loja está aberta</span>
+<span class="kw">let</span> agora = <span class="kw">new</span> <span class="fn">Date</span>();
+<span class="kw">let</span> hora = agora.<span class="fn">getHours</span>();
+<span class="kw">let</span> dia  = agora.<span class="fn">getDay</span>();
+
+<span class="kw">function</span> <span class="fn">verificarLojaAberta</span>() {
+  <span class="kw">if</span> (dia === <span class="num">0</span>) {
+    console.<span class="fn">log</span>(<span class="str">"Fechado aos domingos."</span>);
+  } <span class="kw">else if</span> (hora &gt;= <span class="num">9</span> &amp;&amp; hora &lt; <span class="num">18</span>) {
+    console.<span class="fn">log</span>(<span class="str">"Loja aberta! 🟢"</span>);
+  } <span class="kw">else</span> {
+    console.<span class="fn">log</span>(<span class="str">"Loja fechada. 🔴"</span>);
+  }
+}</pre>
+        <p class="explain"><code>getDay()</code> retorna o dia da semana (0 = domingo, 6 = sábado). Combinado com <code>getHours()</code>, dá pra simular o horário de funcionamento real de uma loja.</p>
+        <button class="btn-pink" onclick="rodarLoja()">▶ Verificar</button>
+        <div class="resultado pink" id="res-loja">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 6: dado -->
+<p class="section-title">// 06 — math.random · math.floor</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.45s">
+        <div class="card-header">
+            <span class="badge badge-blue">math.random</span>
+        </div>
+        <h2>let dado = Math.floor(Math.random())</h2>
+        <pre><span class="cm">// gera um número aleatório de 1 a 6</span>
+<span class="kw">function</span> <span class="fn">rolarDado</span>() {
+  <span class="kw">let</span> dado = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>() * <span class="num">6</span>) + <span class="num">1</span>;
+  console.<span class="fn">log</span>(<span class="str">"Você tirou: "</span> + dado);
+}</pre>
+        <p class="explain"><code>Math.random()</code> gera um decimal entre 0 e 1. Multiplicando por 6 e aplicando <code>Math.floor()</code> arredonda pra baixo, resultando em inteiros de 0 a 5. O <code>+ 1</code> ajusta o intervalo para 1–6, como um dado real.</p>
+        <button class="btn-blue" onclick="rolarDado()">▶ Rolar Dado</button>
+        <div class="resultado blue" id="res-dado">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 7: girar dado -->
+<p class="section-title">// 07 — girar dado com faces</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.5s">
+        <div class="card-header">
+            <span class="badge badge-green">math.random · array</span>
+        </div>
+        <h2>function girarDado()</h2>
+        <pre><span class="cm">// sorteia uma face do dado com emoji</span>
+<span class="kw">function</span> <span class="fn">girarDado</span>() {
+  <span class="kw">let</span> faces = [<span class="str">"⚀"</span>, <span class="str">"⚁"</span>, <span class="str">"⚂"</span>, <span class="str">"⚃"</span>, <span class="str">"⚄"</span>, <span class="str">"⚅"</span>];
+  <span class="kw">let</span> numeroSorteado = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>() * <span class="num">6</span>);
+  <span class="kw">return</span> faces[numeroSorteado];
+}</pre>
+        <p class="explain"><code>Math.floor(Math.random() * 6)</code> gera um índice de 0 a 5. Esse índice acessa o array <code>faces[]</code>, retornando o emoji correspondente — como virar um dado de verdade.</p>
+        <button onclick="rodarGirarDado()">▶ Girar Dado</button>
+        <div class="resultado" id="res-girar" style="font-size:2rem; justify-content:center;">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 8: toLowerCase -->
+<p class="section-title">// 08 — string methods</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.55s">
+        <div class="card-header">
+            <span class="badge badge-pink">string method</span>
+        </div>
+        <h2>email.toLowerCase()</h2>
+        <pre><span class="cm">// corrige e-mail com letras maiúsculas</span>
+<span class="kw">let</span> email = <span class="str">"PAOLAsesi351@gmail.com"</span>;
+<span class="kw">let</span> emailCorrigido = email.<span class="fn">toLowerCase</span>();
+
+console.<span class="fn">log</span>(emailCorrigido);
+<span class="cm">// "paolasesi351@gmail.com"</span></pre>
+        <p class="explain"><code>toLowerCase()</code> converte todos os caracteres da string para minúsculo. Útil para padronizar e-mails e evitar erros de comparação causados por maiúsculas acidentais.</p>
+        <button class="btn-pink" onclick="rodarEmail()">▶ Corrigir Email</button>
+        <div class="resultado pink" id="res-email">aguardando...</div>
+    </div>
+
+</div>
+
+<!-- BLOCO 9: formatarPerfil -->
+<p class="section-title">// 09 — formatar perfil</p>
+<div class="grid">
+
+    <div class="card" style="animation-delay:.6s">
+        <div class="card-header">
+            <span class="badge badge-blue">string methods</span>
+        </div>
+        <h2>function formatarPerfil(nomeUsuario)</h2>
+        <pre><span class="kw">function</span> <span class="fn">formatarPerfil</span>(nomeUsuario) {
+  <span class="kw">let</span> nomeLimpo   = nomeUsuario.<span class="fn">trim</span>();
+  <span class="kw">let</span> totalLetras = nomeLimpo.<span class="fn">length</span>;
+  <span class="kw">let</span> grito       = nomeLimpo.<span class="fn">toUpperCase</span>();
+  <span class="kw">let</span> sussurro    = nomeLimpo.<span class="fn">toLowerCase</span>();
+
+  <span class="kw">return</span> <span class="str">"Nome: "</span> + nomeLimpo
+    + <span class="str">" | Letras: "</span> + totalLetras
+    + <span class="str">" | Grito: "</span> + grito
+    + <span class="str">" | Sussurro: "</span> + sussurro;
+}</pre>
+        <p class="explain"><code>trim()</code> remove espaços extras nas bordas. <code>length</code> conta os caracteres. <code>toUpperCase()</code> e <code>toLowerCase()</code> alteram a capitalização — métodos essenciais para tratar e exibir dados de usuário.</p>
+        <div class="input-row">
+            <input type="text" id="inp-perfil" value="  Paola  " placeholder="Digite um nome">
+            <button class="btn-blue" onclick="rodarPerfil()">▶ Formatar</button>
+        </div>
+        <div class="resultado blue" id="res-perfil">aguardando...</div>
     </div>
 
 </div>
@@ -390,6 +573,17 @@ funcaodeflecha();</pre>
 
     let funcaodeflecha = () => "Uma função de flecha!";
 
+    let hora = new Date().getHours();
+    function saudacao() {
+        if (hora < 12) {
+            return "Bom dia, Paola! 🌅 (" + hora + "h)";
+        } else if (hora < 18) {
+            return "Boa tarde, Paola! ☀️ (" + hora + "h)";
+        } else {
+            return "Boa noite, Paola! 🌙 (" + hora + "h)";
+        }
+    }
+
     // === funções de interação ===
 
     function mostrar(id, texto, cor) {
@@ -404,6 +598,51 @@ funcaodeflecha();</pre>
     function rodarMsgRetorno()   { mostrar('res-retorno',       msgRetorno()); }
     function rodarAnonima()      { mostrar('res-anonima',       anonima()); }
     function rodarFlecha()       { mostrar('res-flecha',        funcaodeflecha()); }
+    function rodarSaudacao()     { mostrar('res-saudacao',      saudacao()); }
+
+    function verificarLojaAberta() {
+        let agora = new Date();
+        let hora  = agora.getHours();
+        let dia   = agora.getDay();
+        if (dia === 0) {
+            return "Fechado aos domingos. 🔴 (" + hora + "h)";
+        } else if (hora >= 9 && hora < 18) {
+            return "Loja aberta! 🟢 (" + hora + "h)";
+        } else {
+            return "Loja fechada. 🔴 (" + hora + "h)";
+        }
+    }
+    function rodarLoja() { mostrar('res-loja', verificarLojaAberta()); }
+
+    function rolarDado() {
+        let dado = Math.floor(Math.random() * 6) + 1;
+        mostrar('res-dado', 'Você tirou: ' + dado + ' 🎲');
+    }
+
+    function girarDado() {
+        let faces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        let numeroSorteado = Math.floor(Math.random() * 6);
+        return faces[numeroSorteado];
+    }
+    function rodarGirarDado() { mostrar('res-girar', girarDado()); }
+
+    function rodarEmail() {
+        let email = 'PAOLAsesi351@gmail.com';
+        let emailCorrigido = email.toLowerCase();
+        mostrar('res-email', emailCorrigido);
+    }
+
+    function formatarPerfil(nomeUsuario) {
+        let nomeLimpo   = nomeUsuario.trim();
+        let totalLetras = nomeLimpo.length;
+        let grito       = nomeLimpo.toUpperCase();
+        let sussurro    = nomeLimpo.toLowerCase();
+        return 'Nome: ' + nomeLimpo + ' | Letras: ' + totalLetras + ' | Grito: ' + grito + ' | Sussurro: ' + sussurro;
+    }
+    function rodarPerfil() {
+        const nome = document.getElementById('inp-perfil').value;
+        mostrar('res-perfil', formatarPerfil(nome));
+    }
 
     function rodarSomar() {
         const n1 = Number(document.getElementById('s1').value);
