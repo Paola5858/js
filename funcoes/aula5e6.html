@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aula 05 e 06 de JavaScript — Objetos, Spread Operator, For, forEach, While e Do While.">
+  <meta name="keywords" content="javascript, objetos, spread, for, foreach, while, SENAI">
+  <title>Objetos & Laços — JS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --card: #141414;
+      --card2: #111;
+      --border: #242424;
+      --accent: #a8ff3e;
+      --accent2: #ff3eac;
+      --accent3: #3eacff;
+      --accent4: #ffb347;
+      --text: #f0f0f0;
+      --muted: #555;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding-bottom: 5rem;
+    }
+
+    /* ── header ── */
+    header {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 30% 60%, #a8ff3e0a 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 70% 40%, #3eacff08 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--accent);
+      border: 1px solid #a8ff3e44;
+      padding: .3rem .9rem;
+      border-radius: 100px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      animation: fadeUp .5s ease both;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      animation: fadeUp .5s .1s ease both;
+    }
+
+    h1 em { font-style: normal; color: var(--accent); }
+    h1 span { font-style: normal; color: var(--accent3); }
+
+    .subtitle {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: .8rem;
+      margin-top: 1.2rem;
+      animation: fadeUp .5s .2s ease both;
+    }
+
+    /* ── nav pills ── */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 3rem;
+      animation: fadeUp .5s .25s ease both;
+    }
+
+    .nav a {
+      font-family: var(--mono);
+      font-size: .7rem;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: .35rem .9rem;
+      transition: all .2s;
+      letter-spacing: .08em;
+    }
+
+    .nav a:hover { color: var(--text); border-color: #555; }
+
+    /* ── section label ── */
+    .section-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.2rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      margin: 3rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    /* ── card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      animation: fadeUp .5s ease both;
+      transition: border-color .25s, transform .25s;
+    }
+
+    .card:hover { border-color: #383838; transform: translateY(-3px); }
+    .card.green:hover { border-color: #a8ff3e55; }
+    .card.pink:hover  { border-color: #ff3eac55; }
+    .card.blue:hover  { border-color: #3eacff55; }
+    .card.orange:hover{ border-color: #ffb34755; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: .6rem;
+      padding: .2rem .6rem;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .b-green  { background: #a8ff3e18; color: var(--accent);  border: 1px solid #a8ff3e44; }
+    .b-pink   { background: #ff3eac18; color: var(--accent2); border: 1px solid #ff3eac44; }
+    .b-blue   { background: #3eacff18; color: var(--accent3); border: 1px solid #3eacff44; }
+    .b-orange { background: #ffb34718; color: var(--accent4); border: 1px solid #ffb34744; }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    .card p.desc {
+      font-size: .82rem;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* ── code block ── */
+    pre {
+      background: #0a0a0a;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 1.1rem 1.2rem;
+      font-family: var(--mono);
+      font-size: .75rem;
+      line-height: 1.75;
+      overflow-x: auto;
+      color: #bbb;
+      flex-shrink: 0;
+    }
+
+    .kw   { color: var(--accent3); }
+    .fn   { color: var(--accent); }
+    .str  { color: var(--accent2); }
+    .cm   { color: #444; font-style: italic; }
+    .num  { color: var(--accent4); }
+    .op   { color: #a8ff3e88; }
+    .prop { color: #e0b0ff; }
+
+    /* ── interactive area ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: .82rem;
+      padding: .55rem .9rem;
+      outline: none;
+      transition: border-color .2s;
+      min-width: 0;
+      flex: 1;
+    }
+
+    input:focus { border-color: #555; }
+
+    button {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: .8rem;
+      border: none;
+      border-radius: 8px;
+      padding: .6rem 1.2rem;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      white-space: nowrap;
+    }
+
+    button:hover  { opacity: .85; }
+    button:active { transform: scale(.97); }
+
+    .btn-green  { background: var(--accent);  color: #0d0d0d; }
+    .btn-pink   { background: var(--accent2); color: #fff; }
+    .btn-blue   { background: var(--accent3); color: #0d0d0d; }
+    .btn-orange { background: var(--accent4); color: #0d0d0d; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-ghost:hover { color: var(--text); border-color: #555; }
+
+    /* ── output box ── */
+    .output {
+      background: #080808;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: .9rem 1.1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      min-height: 3rem;
+      line-height: 1.8;
+      color: #999;
+      transition: all .3s;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .output.active { color: var(--accent); border-color: #a8ff3e33; }
+    .output.pink   { color: var(--accent2) !important; border-color: #ff3eac33 !important; }
+    .output.blue   { color: var(--accent3) !important; border-color: #3eacff33 !important; }
+    .output.orange { color: var(--accent4) !important; border-color: #ffb34733 !important; }
+
+    .output::before {
+      content: '▸ ';
+      color: #333;
+      font-size: .7rem;
+    }
+
+    /* ── objeto visualizer ── */
+    .obj-view {
+      background: #080808;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-family: var(--mono);
+      font-size: .76rem;
+      line-height: 2;
+    }
+
+    .obj-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      border-bottom: 1px solid #141414;
+      padding: .15rem 0;
+      transition: background .2s;
+    }
+
+    .obj-row:last-child { border-bottom: none; }
+    .obj-row:hover { background: #ffffff06; }
+
+    .obj-key   { color: #e0b0ff; min-width: 100px; }
+    .obj-colon { color: #444; }
+    .obj-val   { color: var(--accent); }
+    .obj-val.str  { color: var(--accent2); }
+    .obj-val.num  { color: var(--accent4); }
+    .obj-val.bool { color: var(--accent3); }
+    .obj-val.arr  { color: #aaa; }
+
+    /* ── laço visualizer ── */
+    .loop-track {
+      background: #080808;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      min-height: 3.5rem;
+    }
+
+    .loop-item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 7px;
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      opacity: 0;
+      transform: scale(.5);
+      transition: all .15s;
+    }
+
+    .loop-item.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .loop-item.green-i { background: #a8ff3e18; border-color: #a8ff3e44; color: var(--accent); }
+    .loop-item.pink-i  { background: #ff3eac18; border-color: #ff3eac44; color: var(--accent2); }
+    .loop-item.blue-i  { background: #3eacff18; border-color: #3eacff44; color: var(--accent3); }
+    .loop-item.orange-i{ background: #ffb34718; border-color: #ffb34744; color: var(--accent4); }
+
+    .loop-item.wide {
+      width: auto;
+      padding: 0 .7rem;
+    }
+
+    /* ── spread badge ── */
+    .spread-demo {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .4rem;
+      background: #080808;
+      border: 1px solid #1e1e1e;
+      border-radius: 10px;
+      padding: .9rem 1.1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+    }
+
+    .arr-item {
+      background: #a8ff3e18;
+      border: 1px solid #a8ff3e33;
+      color: var(--accent);
+      border-radius: 6px;
+      padding: .2rem .6rem;
+      font-size: .72rem;
+      transition: all .3s;
+    }
+
+    .arr-item.new {
+      background: #3eacff18;
+      border-color: #3eacff44;
+      color: var(--accent3);
+      animation: popIn .4s ease;
+    }
+
+    .arr-dots { color: #444; letter-spacing: -.1em; }
+
+    .arr-empty-hint { color: #333; font-size: .7rem; margin-left: .4rem; }
+
+    .arr-sep { color: #333; margin: 0 .1rem; }
+
+    .card-full { grid-column: 1 / -1; }
+
+    .loop-foreach-track { flex-direction: column; gap: .3rem; }
+
+    .d1 { animation-delay: .05s; }
+    .d2 { animation-delay: .1s; }
+    .d3 { animation-delay: .15s; }
+    .d4 { animation-delay: .2s; }
+
+    /* ── animações ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+      60%  { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .pop {
+      animation: popIn .3s ease;
+    }
+
+    /* ── footer ── */
+    footer {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: #2a2a2a;
+      margin-top: 5rem;
+      padding-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="tag">SENAI · JS · Aula 05 & 06</div>
+  <h1><em>Objetos</em> &amp;<br><span>Laços</span></h1>
+  <p class="subtitle">// object · spread · for · forEach · while · do while</p>
+</header>
+
+<nav class="nav">
+  <a href="#objetos">Objetos</a>
+  <a href="#spread">Spread Operator</a>
+  <a href="#for">For</a>
+  <a href="#foreach">forEach</a>
+  <a href="#while">While</a>
+  <a href="#dowhile">Do While</a>
+</nav>
+
+<div class="section-wrap">
+
+  <p class="section-label" id="objetos">// aula 05 — objetos</p>
+  <div class="grid">
+
+    <div class="card green d1">
+      <div class="card-top">
+        <span class="badge b-green">objeto literal</span>
+      </div>
+      <h2>var aluno = { ... }</h2>
+      <p class="desc">Um objeto agrupa propriedades relacionadas numa só variável. Cada par <code>chave: valor</code> é uma propriedade.</p>
+      <pre><span class="kw">var</span> aluno = {
+  <span class="prop">nome</span>:         <span class="str">"José Silva"</span>,
+  <span class="prop">idade</span>:        <span class="num">18</span>,
+  <span class="prop">nota</span>:         <span class="num">8.5</span>,
+  <span class="prop">matriculado</span>: <span class="kw">true</span>,
+}</pre>
+      <div class="obj-view" id="obj-aluno">
+        <div class="obj-row"><span class="obj-key">nome</span><span class="obj-colon">:</span><span class="obj-val str">"José Silva"</span></div>
+        <div class="obj-row"><span class="obj-key">idade</span><span class="obj-colon">:</span><span class="obj-val num">18</span></div>
+        <div class="obj-row"><span class="obj-key">nota</span><span class="obj-colon">:</span><span class="obj-val num">8.5</span></div>
+        <div class="obj-row"><span class="obj-key">matriculado</span><span class="obj-colon">:</span><span class="obj-val bool">true</span></div>
+      </div>
+      <div class="controls">
+        <input type="text" id="novo-nome" placeholder="Novo nome..." value="Dagoberto Silva">
+        <button class="btn-green" onclick="mudarNome()">▶ aluno.nome = ...</button>
+      </div>
+      <div class="output" id="out-aluno">aguardando...</div>
+    </div>
+
+    <div class="card pink d2">
+      <div class="card-top">
+        <span class="badge b-pink">objeto com arrays</span>
+      </div>
+      <h2>let esportes = { tipo: [], jogadores: [] }</h2>
+      <p class="desc">Propriedades podem ser arrays. O objeto <code>menu</code> também guarda listas de itens de navegação.</p>
+      <pre><span class="kw">let</span> esportes = {
+  <span class="prop">tipo</span>:     [],
+  <span class="prop">jogadores</span>: [],
+}
+
+<span class="kw">const</span> menu = {
+  <span class="prop">inicial</span>: [<span class="str">"Home"</span>, <span class="str">"Login"</span>, <span class="str">"Contato"</span>, <span class="str">"Hamburger"</span>],
+  <span class="prop">login</span>:   [<span class="str">"Home"</span>, <span class="str">"Contato"</span>, <span class="str">"Hamburger"</span>]
+}</pre>
+      <div class="controls">
+        <button class="btn-pink" onclick="verMenu('inicial')">▶ menu.inicial</button>
+        <button class="btn-ghost" onclick="verMenu('login')">▶ menu.login</button>
+      </div>
+      <div class="output pink" id="out-menu">aguardando...</div>
+    </div>
+
+  </div>
+
+  <p class="section-label" id="spread">// spread operator</p>
+  <div class="grid">
+
+    <div class="card blue d3">
+      <div class="card-top">
+        <span class="badge b-blue">spread operator ...</span>
+      </div>
+      <h2>esportes.tipo = [...esportes.tipo, 'Vôlei']</h2>
+      <p class="desc">O <code>...</code> "espalha" os itens existentes do array dentro de um novo. Assim você adiciona sem perder o que já tinha.</p>
+      <pre>esportes.tipo = [<span class="str">'Basquete'</span>];
+
+esportes.tipo = [...esportes.tipo, <span class="str">'Vôlei'</span>];
+
+<span class="fn">console</span>.log(esportes)</pre>
+      <div class="controls">
+        <input type="text" id="novo-esporte" placeholder="Nome do esporte..." value="Natação">
+        <button class="btn-blue" onclick="addEsporte()">▶ spread + adicionar</button>
+        <button class="btn-ghost" onclick="resetEsporte()">reset</button>
+      </div>
+      <div class="spread-demo" id="spread-demo">
+        <span class="arr-dots">[ ]</span>
+        <span class="arr-empty-hint">vazio — clique pra adicionar</span>
+      </div>
+    </div>
+
+    <div class="card orange d4">
+      <div class="card-top">
+        <span class="badge b-orange">acessar propriedade</span>
+      </div>
+      <h2>console.log(aluno.nome)</h2>
+      <p class="desc">Use a notação de ponto <code>objeto.propriedade</code> pra acessar qualquer valor dentro do objeto.</p>
+      <pre><span class="fn">console</span>.log(aluno.nome);
+
+aluno.nome = <span class="str">"Dagoberto Silva"</span>;
+<span class="fn">console</span>.log(aluno.nome);</pre>
+      <div class="controls">
+        <button class="btn-orange" onclick="logProp('nome')">▶ aluno.nome</button>
+        <button class="btn-ghost" onclick="logProp('idade')">▶ aluno.idade</button>
+        <button class="btn-ghost" onclick="logProp('nota')">▶ aluno.nota</button>
+        <button class="btn-ghost" onclick="logProp('matriculado')">▶ aluno.matriculado</button>
+      </div>
+      <div class="output orange" id="out-prop">aguardando...</div>
+    </div>
+
+  </div>
+
+  <p class="section-label" id="for">// aula 06 — for</p>
+  <div class="grid">
+
+    <div class="card green d1">
+      <div class="card-top">
+        <span class="badge b-green">for · incrementar</span>
+      </div>
+      <h2>for (let i = 0; i &lt;= 10; i++)</h2>
+      <p class="desc">Começa em 0, vai até 10 somando 1 a cada volta. O <code>i++</code> é o incremento.</p>
+      <pre><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt;= <span class="num">10</span>; i++){
+  document.write(i + <span class="str">","</span>);
+}</pre>
+      <div class="controls">
+        <button class="btn-green" onclick="runFor('inc')">▶ Executar</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-inc')">limpar</button>
+      </div>
+      <div class="loop-track" id="loop-inc"></div>
+    </div>
+
+    <div class="card pink d2">
+      <div class="card-top">
+        <span class="badge b-pink">for · decrementar</span>
+      </div>
+      <h2>for (let i = 10; i &gt;= 1; i--)</h2>
+      <p class="desc">Começa em 10, vai até 1 subtraindo 1 a cada volta. O <code>i--</code> é o decremento.</p>
+      <pre><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">10</span>; i &gt;= <span class="num">1</span>; i--){
+  document.write(i + <span class="str">","</span>);
+}</pre>
+      <div class="controls">
+        <button class="btn-pink" onclick="runFor('dec')">▶ Executar</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-dec')">limpar</button>
+      </div>
+      <div class="loop-track" id="loop-dec"></div>
+    </div>
+
+    <div class="card blue d3">
+      <div class="card-top">
+        <span class="badge b-blue">for · percorrer array</span>
+      </div>
+      <h2>for (let i = 0; i &lt; array.length; i++)</h2>
+      <p class="desc">Usa <code>.length</code> como limite pra percorrer cada posição do array pelo índice.</p>
+      <pre><span class="kw">let</span> esportes = [<span class="str">"Vôlei"</span>, <span class="str">"Basquete"</span>, <span class="str">"Futebol"</span>];
+
+<span class="kw">for</span>(<span class="kw">let</span> i = <span class="num">0</span>; i &lt; esportes.length; i++){
+  document.write(
+    <span class="str">`Esporte: <span class="op">${</span>esportes[i]<span class="op">}</span>`</span>
+  )
+}</pre>
+      <div class="controls">
+        <button class="btn-blue" onclick="runForArray()">▶ Executar</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-arr')">limpar</button>
+      </div>
+      <div class="loop-track" id="loop-arr"></div>
+    </div>
+
+  </div>
+
+  <p class="section-label" id="foreach">// forEach</p>
+  <div class="grid">
+
+    <div class="card orange d1 card-full">
+      <div class="card-top">
+        <span class="badge b-orange">forEach · método do array</span>
+      </div>
+      <h2>cidades.forEach( (cidade, i, array) =&gt; { ... } )</h2>
+      <p class="desc">O <code>forEach</code> é um método do próprio array — mais limpo que o <code>for</code> clássico. Recebe uma função de callback com três parâmetros: o item atual, o índice e o array inteiro.</p>
+      <pre><span class="kw">let</span> cidades = [<span class="str">"Guararapes"</span>, <span class="str">"Araçatuba"</span>, <span class="str">"Andradina"</span>];
+
+cidades.<span class="fn">forEach</span>( (cidade, i, array) => {
+  document.write(
+    <span class="str">`Cidade: <span class="op">${</span>cidade<span class="op">}</span> , índice <span class="op">${</span>i<span class="op">}</span> Array: <span class="op">${</span>array<span class="op">}</span>`</span>
+  )
+});</pre>
+      <div class="controls">
+        <button class="btn-orange" onclick="runForEach()">▶ Executar forEach</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-foreach')">limpar</button>
+      </div>
+      <div class="loop-track loop-foreach-track" id="loop-foreach"></div>
+    </div>
+
+  </div>
+
+  <p class="section-label" id="while">// while</p>
+  <div class="grid">
+
+    <div class="card green d1">
+      <div class="card-top">
+        <span class="badge b-green">while</span>
+      </div>
+      <h2>while (contador &lt; carros.length)</h2>
+      <p class="desc">Verifica a condição <em>antes</em> de executar. Se já começa falsa, não executa nenhuma vez.</p>
+      <pre><span class="kw">let</span> carros = [<span class="str">"BMW"</span>, <span class="str">"Bentley"</span>, <span class="str">"Jaguar"</span>, <span class="str">"Ferrari"</span>];
+<span class="kw">let</span> contador = <span class="num">0</span>;
+
+<span class="kw">while</span> (contador &lt; carros.length){
+  document.write(contador + carros[contador]);
+  contador++;
+}</pre>
+      <div class="controls">
+        <button class="btn-green" onclick="runWhile()">▶ Executar</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-while')">limpar</button>
+      </div>
+      <div class="loop-track" id="loop-while"></div>
+    </div>
+
+    <div class="card pink d2" id="dowhile">
+      <div class="card-top">
+        <span class="badge b-pink">do while</span>
+      </div>
+      <h2>do { ... } while (contador2 &lt; carros.length)</h2>
+      <p class="desc">Executa o bloco <em>pelo menos uma vez</em>, depois verifica a condição. Diferença crucial em relação ao <code>while</code>.</p>
+      <pre><span class="kw">let</span> contador2 = <span class="num">0</span>;
+
+<span class="kw">do</span> {
+  document.write(carros[contador2]);
+  contador2++;
+} <span class="kw">while</span>(contador2 &lt; carros.length);</pre>
+      <div class="controls">
+        <button class="btn-pink" onclick="runDoWhile()">▶ Executar</button>
+        <button class="btn-ghost" onclick="clearLoop('loop-dowhile')">limpar</button>
+      </div>
+      <div class="loop-track" id="loop-dowhile"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>Paola · SENAI · Objetos & Laços em JavaScript</footer>
+
+<script>
+
+  var aluno = {
+    nome: "José Silva",
+    idade: 18,
+    nota: 8.5,
+    matriculado: true,
+  };
+
+  let esportes = { tipo: [], jogadores: [] };
+
+  const menu = {
+    inicial: ["Home", "Login", "Contato", "Hamburguer"],
+    login:   ["Home", "Contato", "Hamburguer"]
+  };
+
+  function renderAluno() {
+    const v = {
+      nome:        { val: `"${aluno.nome}"`,      cls: 'str' },
+      idade:       { val: aluno.idade,             cls: 'num' },
+      nota:        { val: aluno.nota,              cls: 'num' },
+      matriculado: { val: String(aluno.matriculado), cls: 'bool' },
+    };
+    const wrap = document.getElementById('obj-aluno');
+    wrap.innerHTML = '';
+    for (const [k, d] of Object.entries(v)) {
+      wrap.innerHTML += `<div class="obj-row">
+        <span class="obj-key">${k}</span>
+        <span class="obj-colon">:</span>
+        <span class="obj-val ${d.cls}">${d.val}</span>
+      </div>`;
+    }
+  }
+
+  function mudarNome() {
+    const novoNome = document.getElementById('novo-nome').value.trim();
+    if (!novoNome) return;
+    aluno.nome = novoNome;
+    renderAluno();
+    setOut('out-aluno', `aluno.nome = "${aluno.nome}"`, true);
+  }
+
+  function verMenu(tipo) {
+    const itens = menu[tipo];
+    setOut('out-menu', `menu.${tipo} → [ ${itens.map(i => `"${i}"`).join(', ')} ]`, false, 'pink');
+  }
+
+  function logProp(prop) {
+    const val = aluno[prop];
+    setOut('out-prop', `aluno.${prop} → ${typeof val === 'string' ? `"${val}"` : val}`, false, 'orange');
+  }
+
+  let esportesArr = [];
+
+  function addEsporte() {
+    const nome = document.getElementById('novo-esporte').value.trim();
+    if (!nome) return;
+    esportesArr = [...esportesArr, nome];
+    renderSpread();
+    document.getElementById('novo-esporte').value = '';
+  }
+
+  function resetEsporte() {
+    esportesArr = [];
+    renderSpread();
+  }
+
+  function renderSpread() {
+    const wrap = document.getElementById('spread-demo');
+    if (esportesArr.length === 0) {
+      wrap.innerHTML = `<span class="arr-dots">[ ]</span><span class="arr-empty-hint">vazio — clique pra adicionar</span>`;
+      return;
+    }
+    wrap.innerHTML = esportesArr.map((e, i) => {
+      const isNew = i === esportesArr.length - 1;
+      return `<span class="arr-item${isNew ? ' new' : ''}">${e}</span>`;
+    }).join('<span class="arr-sep">,</span>');
+  }
+
+
+  const carros  = ["BMW", "Bentley", "Jaguar", "Ferrari"];
+  const cidadesArr = ["Guararapes", "Araçatuba", "Andradina"];
+  const esportesFor = ["Vôlei", "Basquete", "Futebol"];
+
+  async function animateItems(containerId, items, cls, delay = 80) {
+    const wrap = document.getElementById(containerId);
+    wrap.innerHTML = '';
+    for (let idx = 0; idx < items.length; idx++) {
+      await wait(delay);
+      const el = document.createElement('span');
+      el.className = `loop-item ${cls}${items[idx].length > 3 ? ' wide' : ''}`;
+      el.textContent = items[idx];
+      wrap.appendChild(el);
+      void el.offsetWidth;
+      el.classList.add('show');
+    }
+  }
+
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function clearLoop(id) {
+    document.getElementById(id).innerHTML = '';
+  }
+
+  function runFor(tipo) {
+    const items = [];
+    if (tipo === 'inc') {
+      for (let i = 0; i <= 10; i++) items.push(String(i));
+      animateItems('loop-inc', items, 'green-i', 60);
+    } else {
+      for (let i = 10; i >= 1; i--) items.push(String(i));
+      animateItems('loop-dec', items, 'pink-i', 60);
+    }
+  }
+
+  function runForArray() {
+    const items = esportesFor.map(e => e);
+    animateItems('loop-arr', items, 'blue-i wide', 200);
+  }
+
+  function runForEach() {
+    const wrap = document.getElementById('loop-foreach');
+    wrap.innerHTML = '';
+    cidadesArr.forEach((cidade, i, array) => {
+      setTimeout(() => {
+        const el = document.createElement('span');
+        el.className = 'loop-item orange-i wide show';
+        el.style.width = '100%';
+        el.style.justifyContent = 'flex-start';
+        el.style.padding = '.3rem .8rem';
+        el.style.height = 'auto';
+        el.style.fontSize = '.72rem';
+        el.textContent = `Cidade: ${cidade} · índice ${i} · Array: [${array}]`;
+        wrap.appendChild(el);
+      }, i * 300);
+    });
+  }
+
+  function runWhile() {
+    const items = [];
+    let contador = 0;
+    while (contador < carros.length) {
+      items.push(contador + carros[contador]);
+      contador++;
+    }
+    animateItems('loop-while', items, 'green-i wide', 150);
+  }
+
+  function runDoWhile() {
+    const items = [];
+    let contador2 = 0;
+    do {
+      items.push(carros[contador2]);
+      contador2++;
+    } while (contador2 < carros.length);
+    animateItems('loop-dowhile', items, 'pink-i wide', 150);
+  }
+
+
+  function setOut(id, txt, green = true, colorClass = '') {
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = 'output' + (colorClass ? ' ' + colorClass : (green ? ' active' : ''));
+    el.classList.add('pop');
+    el.addEventListener('animationend', () => el.classList.remove('pop'), { once: true });
+  }
+</script>
+
+</body>
+</html>

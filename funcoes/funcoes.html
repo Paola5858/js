@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula de JavaScript — Funções: sem retorno, com retorno, anônima, arrow function e Date.">
+    <meta name="keywords" content="javascript, funcoes, arrow function, return, SENAI">
     <title>Funções JS</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -268,6 +270,20 @@
             color: #333;
             margin-top: 4rem;
         }
+
+        .d1 { animation-delay: .05s; }
+        .d2 { animation-delay: .1s; }
+        .d3 { animation-delay: .15s; }
+        .d4 { animation-delay: .2s; }
+        .d5 { animation-delay: .25s; }
+        .d6 { animation-delay: .3s; }
+        .d7 { animation-delay: .35s; }
+        .d8 { animation-delay: .4s; }
+        .d9 { animation-delay: .45s; }
+        .d10 { animation-delay: .5s; }
+        .d11 { animation-delay: .55s; }
+        .d12 { animation-delay: .6s; }
+        .res-dado-large { font-size: 2rem; justify-content: center; }
     </style>
 </head>
 <body>
@@ -282,7 +298,7 @@
 <p class="section-title">// 01 — sem parâmetros</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.05s">
+    <div class="card d1">
         <div class="card-header">
             <span class="badge badge-green">sem retorno</span>
         </div>
@@ -296,7 +312,7 @@
         <div class="resultado" id="res-mensagem">aguardando...</div>
     </div>
 
-    <div class="card" style="animation-delay:.1s">
+    <div class="card d2">
         <div class="card-header">
             <span class="badge badge-pink">com retorno</span>
         </div>
@@ -316,7 +332,7 @@
 <p class="section-title">// 02 — com parâmetros</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.15s">
+    <div class="card d3">
         <div class="card-header">
             <span class="badge badge-green">sem retorno · com parâmetros</span>
         </div>
@@ -334,7 +350,7 @@
         <div class="resultado" id="res-somar">aguardando...</div>
     </div>
 
-    <div class="card" style="animation-delay:.2s">
+    <div class="card d4">
         <div class="card-header">
             <span class="badge badge-pink">com retorno · com parâmetros</span>
         </div>
@@ -358,7 +374,7 @@
 <p class="section-title">// 03 — anônima e arrow function</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.25s">
+    <div class="card d5">
         <div class="card-header">
             <span class="badge badge-blue">função anônima</span>
         </div>
@@ -373,7 +389,7 @@ anonima();</pre>
         <div class="resultado blue" id="res-anonima">aguardando...</div>
     </div>
 
-    <div class="card" style="animation-delay:.3s">
+    <div class="card d6">
         <div class="card-header">
             <span class="badge badge-blue">arrow function</span>
         </div>
@@ -395,7 +411,7 @@ funcaodeflecha();</pre>
 <p class="section-title">// 04 — objeto date</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.35s">
+    <div class="card d7">
         <div class="card-header">
             <span class="badge badge-green">new Date()</span>
         </div>
@@ -423,7 +439,7 @@ funcaodeflecha();</pre>
 <p class="section-title">// 05 — verificar loja aberta</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.4s">
+    <div class="card d8">
         <div class="card-header">
             <span class="badge badge-pink">new Date()</span>
         </div>
@@ -453,7 +469,7 @@ funcaodeflecha();</pre>
 <p class="section-title">// 06 — math.random · math.floor</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.45s">
+    <div class="card d9">
         <div class="card-header">
             <span class="badge badge-blue">math.random</span>
         </div>
@@ -474,7 +490,7 @@ funcaodeflecha();</pre>
 <p class="section-title">// 07 — girar dado com faces</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.5s">
+    <div class="card d10">
         <div class="card-header">
             <span class="badge badge-green">math.random · array</span>
         </div>
@@ -487,7 +503,7 @@ funcaodeflecha();</pre>
 }</pre>
         <p class="explain"><code>Math.floor(Math.random() * 6)</code> gera um índice de 0 a 5. Esse índice acessa o array <code>faces[]</code>, retornando o emoji correspondente — como virar um dado de verdade.</p>
         <button onclick="rodarGirarDado()">▶ Girar Dado</button>
-        <div class="resultado" id="res-girar" style="font-size:2rem; justify-content:center;">aguardando...</div>
+        <div class="resultado res-dado-large" id="res-girar">aguardando...</div>
     </div>
 
 </div>
@@ -496,7 +512,7 @@ funcaodeflecha();</pre>
 <p class="section-title">// 08 — string methods</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.55s">
+    <div class="card d11">
         <div class="card-header">
             <span class="badge badge-pink">string method</span>
         </div>
@@ -518,7 +534,7 @@ console.<span class="fn">log</span>(emailCorrigido);
 <p class="section-title">// 09 — formatar perfil</p>
 <div class="grid">
 
-    <div class="card" style="animation-delay:.6s">
+    <div class="card d12">
         <div class="card-header">
             <span class="badge badge-blue">string methods</span>
         </div>
