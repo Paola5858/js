@@ -340,6 +340,8 @@
 <div class="tabs">
   <button class="tab active" onclick="showTab('aula01', this)">Aula 01 — Seletores</button>
   <button class="tab" onclick="showTab('aula02', this)">Aula 02 — Atributos & CSS</button>
+  <button class="tab" onclick="showTab('aula03', this)">Aula 03 — Seleção · Manipulação · Evento</button>
+  <button class="tab" onclick="showTab('aula04', this)">Aula 04 — DOM 2 & DOM 3</button>
 </div>
 
 <!-- ===================== AULA 01 ===================== -->
@@ -581,7 +583,167 @@ container.<span class="fn">removeAttribute</span>(<span class="str">"class"</spa
 
 </div>
 
-<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 e 02</footer>
+<!-- ===================== AULA 03 ===================== -->
+<div class="page" id="aula03">
+
+  <p class="section-label">// 03 — as 3 partes do DOM: seleção · manipulação · evento</p>
+
+  <!-- card resumo conceitual -->
+  <div class="card" style="grid-template-columns:1fr;">
+    <div class="card-left">
+      <h2>O que é cada parte?</h2>
+      <p style="margin-top:.6rem">Todo código DOM pode ser dividido em 3 responsabilidades. O exemplo abaixo (exercício do professor) usa as três ao mesmo tempo.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem">
+        <div style="border:2px solid var(--accent);border-radius:10px;padding:1rem">
+          <span class="badge badge-orange" style="margin-bottom:.6rem;display:inline-flex">① Seleção</span>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.6">Encontrar o elemento na página. Usa <code style="font-family:var(--mono)">querySelector</code>, <code style="font-family:var(--mono)">getElementById</code> etc. Sem seleção, você não tem o elemento para trabalhar.</p>
+        </div>
+        <div style="border:2px solid var(--accent2);border-radius:10px;padding:1rem">
+          <span class="badge badge-blue" style="margin-bottom:.6rem;display:inline-flex">② Manipulação</span>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.6">Alterar o elemento já selecionado: mudar texto (<code style="font-family:var(--mono)">textContent</code>), cor, tamanho, atributos. É o que de fato muda o que o usuário vê.</p>
+        </div>
+        <div style="border:2px solid var(--accent3);border-radius:10px;padding:1rem">
+          <span class="badge badge-green" style="margin-bottom:.6rem;display:inline-flex">③ Evento</span>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.6">Escutar uma ação do usuário (clique, tecla, mouse...) com <code style="font-family:var(--mono)">addEventListener</code>. A manipulação só acontece quando o evento dispara.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- card código anotado -->
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-orange">Código do exercício</span>
+      <h2 style="margin-top:.6rem">As 3 partes no mesmo código</h2>
+      <p>Cada linha colorida pertence a uma das três responsabilidades. Veja como elas se encadeiam.</p>
+      <pre><span class="cm">// ① SELEÇÃO — acha os elementos</span>
+<span class="kw">const</span> meuTitulo = document.<span class="fn">querySelector</span>(<span class="str">'#titulo'</span>);
+<span class="kw">const</span> meuBotao  = document.<span class="fn">querySelector</span>(<span class="str">'#btnMudar'</span>);
+
+<span class="cm">// ③ EVENTO — escuta o clique no botão</span>
+meuBotao.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+
+  <span class="cm">// ② MANIPULAÇÃO — altera o título</span>
+  meuTitulo.<span class="mt">textContent</span>  = <span class="str">"O DOM FUNCIONOU!"</span>;
+  meuTitulo.<span class="mt">style</span>.color    = <span class="str">"red"</span>;
+  meuTitulo.<span class="mt">style</span>.fontSize = <span class="str">"50px"</span>;
+
+  console.<span class="fn">log</span>(<span class="str">"botão clicado!"</span>);
+});</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">resultado ao vivo</div>
+        <h1 id="ex-titulo" class="demo-el" style="font-size:1.1rem;font-weight:700;transition:all .4s">Texto Original</h1>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-red" id="ex-btn" onclick="runExercicio()">Clique para Mudar!</button>
+        <button class="reset-btn" onclick="resetExercicio()">↺ reset</button>
+      </div>
+      <div class="log" id="log-ex">aguardando o clique...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== AULA 04 ===================== -->
+<div class="page" id="aula04">
+
+  <p class="section-label">// 04 — DOM 2: textContent + style · DOM 3: classList.toggle</p>
+
+  <!-- DOM 2 -->
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-orange">DOM 2</span>
+      <h2 style="margin-top:.6rem">Mudar título com clique</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem">
+        <div style="border:2px solid var(--accent);border-radius:8px;padding:.8rem">
+          <span class="badge badge-orange" style="margin-bottom:.4rem;display:inline-flex">① Seleção</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Encontra os elementos da página pelo ID.</p>
+        </div>
+        <div style="border:2px solid var(--accent2);border-radius:8px;padding:.8rem">
+          <span class="badge badge-blue" style="margin-bottom:.4rem;display:inline-flex">② Manipulação</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">JS muda texto, cor e tamanho depois do clique.</p>
+        </div>
+        <div style="border:2px solid var(--accent3);border-radius:8px;padding:.8rem;grid-column:1/-1">
+          <span class="badge badge-green" style="margin-bottom:.4rem;display:inline-flex">③ Evento</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Clicar no botão dispara o <code style="font-family:var(--mono)">addEventListener('click')</code>.</p>
+        </div>
+      </div>
+      <pre><span class="cm">// ① SELEÇÃO</span>
+<span class="kw">const</span> meuTitulo = document.<span class="fn">querySelector</span>(<span class="str">'#titulo'</span>);
+<span class="kw">const</span> meuBotao  = document.<span class="fn">querySelector</span>(<span class="str">'#btnMudar'</span>);
+
+<span class="cm">// ③ EVENTO</span>
+meuBotao.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+
+  <span class="cm">// ② MANIPULAÇÃO</span>
+  meuTitulo.<span class="mt">textContent</span>  = <span class="str">"O DOM FUNCIONOU!"</span>;
+  meuTitulo.<span class="mt">style</span>.color    = <span class="str">"red"</span>;
+  meuTitulo.<span class="mt">style</span>.fontSize = <span class="str">"50px"</span>;
+});</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">resultado ao vivo</div>
+        <h1 id="d2-titulo" class="demo-el" style="font-size:1.1rem;font-weight:700;transition:all .4s">Texto Original</h1>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-red" onclick="runDom2()">Clique para Mudar!</button>
+        <button class="reset-btn" onclick="resetDom2()">↺ reset</button>
+      </div>
+      <div class="log" id="log-d2">aguardando o clique...</div>
+    </div>
+  </div>
+
+  <!-- DOM 3 -->
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-blue">DOM 3</span>
+      <h2 style="margin-top:.6rem">Modo escuro com classList.toggle</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem">
+        <div style="border:2px solid var(--accent);border-radius:8px;padding:.8rem">
+          <span class="badge badge-orange" style="margin-bottom:.4rem;display:inline-flex">① Seleção</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Pega o corpo da página e o botão para poder usar depois.</p>
+        </div>
+        <div style="border:2px solid var(--accent2);border-radius:8px;padding:.8rem">
+          <span class="badge badge-blue" style="margin-bottom:.4rem;display:inline-flex">② Manipulação</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Liga ou desliga o modo escuro — adiciona ou remove a classe <code style="font-family:var(--mono)">modo-escuro</code>.</p>
+        </div>
+        <div style="border:2px solid var(--accent3);border-radius:8px;padding:.8rem;grid-column:1/-1">
+          <span class="badge badge-green" style="margin-bottom:.4rem;display:inline-flex">③ Evento</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Fica "escutando" o botão. Quando o usuário clicar, executa o código.</p>
+        </div>
+      </div>
+      <pre><span class="cm">// ① SELEÇÃO</span>
+<span class="kw">const</span> corpoPagina = document.<span class="mt">body</span>;
+<span class="kw">const</span> botaoTema   = document.<span class="fn">querySelector</span>(<span class="str">"#btnTema"</span>);
+
+<span class="cm">// ③ EVENTO</span>
+botaoTema.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+
+  <span class="cm">// ② MANIPULAÇÃO</span>
+  corpoPagina.<span class="mt">classList</span>.<span class="fn">toggle</span>(<span class="str">'modo-escuro'</span>);
+});</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo" id="d3-preview" style="transition:background .4s,color .4s;flex-direction:column;gap:.4rem">
+        <div class="demo-title">preview ao vivo</div>
+        <div id="d3-box" style="background:#fff;color:#1a1a1a;border-radius:8px;padding:1rem;transition:background .4s,color .4s;font-weight:600;font-size:.9rem">
+          Olá! Eu sou o corpo da página.
+          <p style="font-weight:400;font-size:.78rem;margin-top:.3rem;opacity:.7">Clique no botão para alternar o tema.</p>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-blue" id="d3-btn" onclick="runDom3()">🌙 Alternar Tema</button>
+      </div>
+      <div class="log" id="log-d3">aguardando o clique...</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 a 04</footer>
 
 <script>
   // ===================== TABS =====================
@@ -709,6 +871,58 @@ container.<span class="fn">removeAttribute</span>(<span class="str">"class"</spa
     el.textContent = 'div.container — sem classe';
     flash(el);
     log('log-class', 'removeAttribute("class") → classe removida');
+  }
+
+  // ===================== AULA 03 =====================
+  function runExercicio() {
+    // ① seleção
+    let meuTitulo = document.getElementById('ex-titulo');
+    // ② manipulação
+    meuTitulo.textContent  = 'O DOM FUNCIONOU!';
+    meuTitulo.style.color    = 'red';
+    meuTitulo.style.fontSize = '50px';
+    flash(meuTitulo);
+    log('log-ex', 'O botão foi clicado e o título mudou!');
+  }
+
+  function resetExercicio() {
+    let el = document.getElementById('ex-titulo');
+    el.textContent = 'Texto Original';
+    el.style.color = '';
+    el.style.fontSize = '';
+    log('log-ex', 'aguardando o clique...');
+  }
+
+  // ===================== AULA 04 =====================
+  function runDom2() {
+    let t = document.getElementById('d2-titulo');
+    t.textContent  = 'O DOM FUNCIONOU!';
+    t.style.color    = 'red';
+    t.style.fontSize = '50px';
+    flash(t);
+    log('log-d2', 'textContent + style.color + style.fontSize alterados');
+  }
+
+  function resetDom2() {
+    let t = document.getElementById('d2-titulo');
+    t.textContent = 'Texto Original';
+    t.style.color = '';
+    t.style.fontSize = '';
+    log('log-d2', 'aguardando o clique...');
+  }
+
+  let d3Dark = false;
+  function runDom3() {
+    d3Dark = !d3Dark;
+    let box = document.getElementById('d3-box');
+    let btn = document.getElementById('d3-btn');
+    box.style.background = d3Dark ? '#1a1a1a' : '#fff';
+    box.style.color      = d3Dark ? '#f5f0e8' : '#1a1a1a';
+    btn.textContent = d3Dark ? '☀️ Alternar Tema' : '🌙 Alternar Tema';
+    flash(box);
+    log('log-d3', d3Dark
+      ? 'classList.toggle → classe "modo-escuro" ADICIONADA'
+      : 'classList.toggle → classe "modo-escuro" REMOVIDA');
   }
 
   function resetAula02() {
