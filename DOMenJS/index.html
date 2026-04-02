@@ -342,6 +342,7 @@
   <button class="tab" onclick="showTab('aula02', this)">Aula 02 — Atributos & CSS</button>
   <button class="tab" onclick="showTab('aula03', this)">Aula 03 — Seleção · Manipulação · Evento</button>
   <button class="tab" onclick="showTab('aula04', this)">Aula 04 — DOM 2 & DOM 3</button>
+  <button class="tab" onclick="showTab('aula05', this)">Aula 05 — Desafio DOM</button>
 </div>
 
 <!-- ===================== AULA 01 ===================== -->
@@ -743,7 +744,72 @@ botaoTema.<span class="fn">addEventListener</span>(<span class="str">'click'</sp
 
 </div>
 
-<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 a 04</footer>
+<!-- ===================== AULA 05 ===================== -->
+<div class="page" id="aula05">
+
+  <p class="section-label">// 05 — desafio DOM · correção · input + span + addEventListener</p>
+
+  <!-- card conceitual -->
+  <div class="card" style="grid-template-columns:1fr;">
+    <div class="card-left">
+      <h2>Desafio DOM — Correção</h2>
+      <p style="margin-top:.6rem">O desafio pede para pegar o valor de um <code style="font-family:var(--mono)">input</code>, exibir no span e mudar a cor. As 3 partes do DOM estão presentes.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem">
+        <div style="border:2px solid var(--accent);border-radius:10px;padding:1rem">
+          <span class="badge badge-orange" style="margin-bottom:.6rem;display:inline-flex">① Seleção</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Seleciona o <strong>input</strong>, o <strong>botão</strong> e o <strong>span</strong> pelo ID usando <code style="font-family:var(--mono)">querySelector</code>.</p>
+        </div>
+        <div style="border:2px solid var(--accent2);border-radius:10px;padding:1rem">
+          <span class="badge badge-blue" style="margin-bottom:.6rem;display:inline-flex">② Manipulação</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">Copia o valor do input (<code style="font-family:var(--mono)">.value</code>) para o <code style="font-family:var(--mono)">textContent</code> do span e muda a cor para verde.</p>
+        </div>
+        <div style="border:2px solid var(--accent3);border-radius:10px;padding:1rem">
+          <span class="badge badge-green" style="margin-bottom:.6rem;display:inline-flex">③ Evento</span>
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.5;margin:0">O <code style="font-family:var(--mono)">addEventListener('click')</code> no botão dispara tudo quando o usuário clica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- card código + demo -->
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-orange">Código corrigido</span>
+      <h2 style="margin-top:.6rem">As 3 partes anotadas</h2>
+      <p>Repare que <code style="font-family:var(--mono)">.value</code> é exclusivo de inputs — é assim que se lê o que o usuário digitou.</p>
+      <pre><span class="cm">// ① SELEÇÃO</span>
+<span class="kw">const</span> inputNome     = document.<span class="fn">querySelector</span>(<span class="str">'#campo-nome'</span>);
+<span class="kw">const</span> botao         = document.<span class="fn">querySelector</span>(<span class="str">'#btn-acao'</span>);
+<span class="kw">const</span> spanResultado = document.<span class="fn">querySelector</span>(<span class="str">'#resultado'</span>);
+
+<span class="cm">// ③ EVENTO</span>
+botao.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, () => {
+
+  <span class="cm">// ② MANIPULAÇÃO</span>
+  spanResultado.<span class="mt">textContent</span> = inputNome.<span class="mt">value</span>;
+  spanResultado.<span class="mt">style</span>.color = <span class="str">"green"</span>;
+
+  console.<span class="fn">log</span>(<span class="str">"O nome exibido foi: "</span> + inputNome.<span class="mt">value</span>);
+  <span class="fn">alert</span>(<span class="str">"Nome enviado!"</span>);
+});</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo" style="gap:.8rem">
+        <div class="demo-title">resultado ao vivo</div>
+        <input id="d5-input" type="text" placeholder="Digite seu nome..." style="font-family:var(--mono);font-size:.8rem;padding:.55rem .9rem;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink);outline:none;width:100%;transition:border .2s" onfocus="this.style.borderColor='var(--ink)'" onblur="this.style.borderColor='var(--border)'">
+        <div style="font-size:.82rem">Olá, <span id="d5-resultado" style="font-weight:700;transition:color .3s">...</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="runDesafio()">▶ Enviar nome</button>
+        <button class="reset-btn" onclick="resetDesafio()">↺ reset</button>
+      </div>
+      <div class="log" id="log-d5">aguardando o clique...</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 a 05</footer>
 
 <script>
   // ===================== TABS =====================
@@ -923,6 +989,28 @@ botaoTema.<span class="fn">addEventListener</span>(<span class="str">'click'</sp
     log('log-d3', d3Dark
       ? 'classList.toggle → classe "modo-escuro" ADICIONADA'
       : 'classList.toggle → classe "modo-escuro" REMOVIDA');
+  }
+
+  // ===================== AULA 05 =====================
+  function runDesafio() {
+    let inputNome     = document.getElementById('d5-input');
+    let spanResultado = document.getElementById('d5-resultado');
+    if (!inputNome.value.trim()) {
+      log('log-d5', 'campo vazio — digite um nome primeiro!');
+      return;
+    }
+    spanResultado.textContent = inputNome.value;
+    spanResultado.style.color = 'green';
+    flash(spanResultado);
+    log('log-d5', 'O nome exibido foi: ' + inputNome.value);
+  }
+
+  function resetDesafio() {
+    document.getElementById('d5-input').value = '';
+    let s = document.getElementById('d5-resultado');
+    s.textContent = '...';
+    s.style.color = '';
+    log('log-d5', 'aguardando o clique...');
   }
 
   function resetAula02() {
