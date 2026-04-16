@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Async JS — Requisições Assíncronas</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f0e8;
+      --ink: #1a1a1a;
+      --card: #ffffff;
+      --border: #ddd8ce;
+      --accent: #ff4d00;
+      --accent2: #0066ff;
+      --accent3: #00b341;
+      --accent4: #9333ea;
+      --muted: #999;
+      --mono: 'DM Mono', monospace;
+      --sans: 'Bricolage Grotesque', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding: 2rem 1rem 5rem;
+    }
+
+    header {
+      max-width: 900px;
+      margin: 0 auto 3rem;
+      padding: 2rem 0;
+      border-bottom: 2px solid var(--ink);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .logo span { color: var(--accent); font-style: italic; }
+
+    .header-meta {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .tabs {
+      display: flex;
+      gap: .5rem;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 500;
+      padding: .6rem 1.4rem;
+      border: 2px solid var(--ink);
+      border-radius: 100px;
+      background: transparent;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--ink);
+    }
+
+    .tab.active, .tab:hover { background: var(--ink); color: var(--bg); }
+
+    .page { display: none; max-width: 900px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 2rem 0 .8rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 1.8rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      transition: box-shadow .2s;
+    }
+
+    .card:hover { box-shadow: 4px 4px 0 var(--ink); }
+
+    @media (max-width: 600px) { .card { grid-template-columns: 1fr; } }
+
+    .card-left h2 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+    .card-left p { font-size: .82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+
+    .card-full { grid-column: 1 / -1; }
+
+    pre {
+      background: var(--ink);
+      color: #f5f0e8;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-family: var(--mono);
+      font-size: .72rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .kw  { color: #ff4d00; }
+    .fn  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #555; font-style: italic; }
+    .mt  { color: #fbbf24; }
+    .kw2 { color: #c084fc; }
+
+    .demo {
+      background: var(--bg);
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      margin-bottom: .8rem;
+    }
+
+    .demo-title {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .2rem;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 500;
+      padding: .55rem 1.2rem;
+      border-radius: 8px;
+      border: 2px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .btn:hover  { background: var(--ink); color: var(--bg); }
+    .btn:active { transform: scale(.97); }
+
+    .btn-red   { border-color: var(--accent);  color: var(--accent); }
+    .btn-red:hover  { background: var(--accent);  color: #fff; }
+
+    .btn-blue  { border-color: var(--accent2); color: var(--accent2); }
+    .btn-blue:hover { background: var(--accent2); color: #fff; }
+
+    .btn-green { border-color: var(--accent3); color: var(--accent3); }
+    .btn-green:hover { background: var(--accent3); color: #fff; }
+
+    .btn-purple { border-color: var(--accent4); color: var(--accent4); }
+    .btn-purple:hover { background: var(--accent4); color: #fff; }
+
+    .btn-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+    .log {
+      background: var(--ink);
+      border-radius: 8px;
+      padding: .8rem 1rem;
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: #86efac;
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: all .3s;
+    }
+
+    .log::before { content: '>'; color: #555; }
+
+    .console-box {
+      background: var(--ink);
+      border-radius: 8px;
+      padding: .8rem 1rem;
+      font-family: var(--mono);
+      font-size: .7rem;
+      min-height: 80px;
+      line-height: 2;
+    }
+
+    .console-box .c-green  { color: #86efac; }
+    .console-box .c-yellow { color: #fbbf24; }
+    .console-box .c-red    { color: #f87171; }
+    .console-box .c-muted  { color: #555; font-style: italic; }
+    .console-box .c-purple { color: #c084fc; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-family: var(--mono);
+      font-size: .62rem;
+      padding: .25rem .6rem;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+
+    .badge-orange { background: #fff0ea; color: var(--accent);  border: 1px solid #ffccb3; }
+    .badge-blue   { background: #e8f0ff; color: var(--accent2); border: 1px solid #b3c9ff; }
+    .badge-green  { background: #e8fff0; color: var(--accent3); border: 1px solid #b3ffcc; }
+    .badge-purple { background: #f3e8ff; color: var(--accent4); border: 1px solid #d8b4fe; }
+    .badge-red    { background: #fff0f0; color: #dc2626;        border: 1px solid #fca5a5; }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      margin-top: .6rem;
+    }
+
+    .tl-step {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .78rem;
+    }
+
+    .tl-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green  { background: var(--accent3); }
+    .dot-yellow { background: #f59e0b; }
+    .dot-red    { background: #dc2626; }
+
+    .tl-time {
+      font-family: var(--mono);
+      font-size: .62rem;
+      color: var(--muted);
+      min-width: 32px;
+    }
+
+    .warn-box {
+      background: #fff7ed;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: .8rem 1rem;
+      font-size: .78rem;
+      color: #92400e;
+      font-family: var(--mono);
+      line-height: 1.6;
+    }
+
+    .xano-list { list-style: none; padding: 0; }
+    .xano-list li {
+      padding: .5rem .8rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .85rem;
+      font-family: var(--mono);
+      transition: background .2s;
+    }
+    .xano-list li:last-child { border-bottom: none; }
+    .xano-list li:hover { background: #f0ece4; border-radius: 6px; }
+
+    .loading-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent2);
+      animation: blink 1s infinite;
+      margin-right: 4px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+
+    .highlight-flash { animation: flash .6s ease; }
+    @keyframes flash {
+      0%   { outline: 3px solid var(--accent); outline-offset: 3px; }
+      100% { outline: 3px solid transparent; }
+    }
+
+    footer {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--border);
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">JS <span>Async</span></div>
+  <div class="header-meta">
+    SENAI · Novo Ensino Médio<br>
+    Requisições Assíncronas<br>
+    Promise · async/await · fetch
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('promise1', this)">Promise 1 — Currículo</button>
+  <button class="tab" onclick="showTab('promise2', this)">Promise 2 — Café</button>
+  <button class="tab" onclick="showTab('promise3', this)">Promise 3 — Pizza</button>
+  <button class="tab" onclick="showTab('fetch1', this)">Fetch — Xano</button>
+</div>
+
+<!-- ===================== PROMISE 1 ===================== -->
+<div class="page active" id="promise1">
+
+  <p class="section-label">// setTimeout sem promise — js não espera</p>
+
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-orange">assíncrono sem promise</span>
+      <h2 style="margin-top:.6rem">O JS não espera o setTimeout</h2>
+      <p>O <code style="font-family:var(--mono);font-size:.8em">setTimeout</code> agenda um código pra rodar depois, mas o JS não para — ele segue pra próxima linha imediatamente. A ordem que aparece no console <strong>não é</strong> a ordem do código.</p>
+      <pre><span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"1. Mandei o currículo"</span>);
+
+<span class="fn">setTimeout</span>(() => {
+    <span class="cm">// isso roda 3 segundos depois</span>
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"2. A empresa respondeu: VOCÊ FOI CONTRATADO!"</span>);
+}, <span class="cm">3000</span>);
+
+<span class="cm">// JS não espera o setTimeout acima</span>
+<span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"3. Continuei estudando outras coisas..."</span>);</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">console ao vivo</div>
+        <div id="con1" class="console-box">
+          <span class="c-muted">// clique em executar para ver a ordem</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> linha 1 executa imediatamente</div>
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> setTimeout é agendado, JS segue em frente</div>
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> linha 3 executa imediatamente</div>
+        <div class="tl-step"><div class="tl-dot dot-yellow"></div><span class="tl-time">3s</span> callback do setTimeout finalmente roda</div>
+      </div>
+      <div class="btn-row" style="margin-top:.8rem">
+        <button class="btn btn-red" onclick="runP1()">▶ Executar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== PROMISE 2 ===================== -->
+<div class="page" id="promise2">
+
+  <p class="section-label">// promise com resolve + async/await — funciona direitinho</p>
+
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-blue">async/await com resolve</span>
+      <h2 style="margin-top:.6rem">fazerCafe() + rotinaMatinal()</h2>
+      <p>A <code style="font-family:var(--mono);font-size:.8em">Promise</code> envolve o setTimeout e o <code style="font-family:var(--mono);font-size:.8em">resolve</code> é chamado quando o tempo acaba. O <code style="font-family:var(--mono);font-size:.8em">await</code> pausa a função até a promise resolver, depois continua de onde parou.</p>
+      <pre><span class="kw">function</span> <span class="fn">fazerCafe</span>() {
+    <span class="kw">return new</span> <span class="fn">Promise</span>((resolve) => {
+        <span class="fn">setTimeout</span>(() => {
+            resolve(<span class="str">"Café pronto e quentinho!"</span>);
+        }, <span class="cm">2000</span>);
+    });
+}
+
+<span class="kw2">async function</span> <span class="fn">rotinaMatinal</span>() {
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"Acordei e estou com sono..."</span>);
+
+    <span class="cm">// await pausa aqui até a promise resolver</span>
+    <span class="kw">const</span> cafe = <span class="kw2">await</span> <span class="fn">fazerCafe</span>();
+
+    <span class="fn">console</span>.<span class="mt">log</span>(cafe);
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"Agora sim, partiu trabalho!"</span>);
+}
+
+<span class="fn">rotinaMatinal</span>();</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">console ao vivo</div>
+        <div id="con2" class="console-box">
+          <span class="c-muted">// clique em executar para ver o await pausar</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> "Acordei..." imprime na hora</div>
+        <div class="tl-step"><div class="tl-dot dot-yellow"></div><span class="tl-time">2s</span> await pausa até o resolve ser chamado</div>
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">2s</span> "Café pronto..." e "partiu trabalho!" imprimem</div>
+      </div>
+      <div class="btn-row" style="margin-top:.8rem">
+        <button class="btn btn-blue" onclick="runP2()">▶ Executar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== PROMISE 3 ===================== -->
+<div class="page" id="promise3">
+
+  <p class="section-label">// promise sem resolve — travada para sempre</p>
+
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-red">promise travada — bug de propósito</span>
+      <h2 style="margin-top:.6rem">escolha() — o resolve sumiu</h2>
+      <p>O setTimeout roda e o log aparece, mas o <code style="font-family:var(--mono);font-size:.8em">resolve</code> nunca é chamado. A promise fica em estado <strong>pending</strong> pra sempre. O <code style="font-family:var(--mono);font-size:.8em">await</code> fica esperando eternamente — o código depois dele nunca executa.</p>
+      <pre><span class="kw">function</span> <span class="fn">escolha</span>() {
+    <span class="kw">return new</span> <span class="fn">Promise</span>((resolve) => {
+        <span class="fn">setTimeout</span>(() => {
+            <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"Cliente escolheu a pizza de calabresa!"</span>);
+            <span class="cm">// faltou chamar: resolve("pizza de calabresa")</span>
+            <span class="cm">// sem resolve → promise fica "pending" pra sempre</span>
+        }, <span class="cm">3000</span>);
+    });
+}
+
+<span class="kw2">async function</span> <span class="fn">assarPizza</span>() {
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"Iniciando o processo de assar a pizza..."</span>);
+    <span class="fn">console</span>.<span class="mt">log</span>(<span class="str">"Esperando o cliente escolher a pizza..."</span>);
+
+    <span class="kw">const</span> pizza = <span class="kw2">await</span> <span class="fn">escolha</span>(); <span class="cm">// trava aqui pra sempre</span>
+
+    <span class="fn">console</span>.<span class="mt">log</span>(pizza); <span class="cm">// nunca executa</span>
+}
+
+<span class="fn">assarPizza</span>();</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">console ao vivo</div>
+        <div id="con3" class="console-box">
+          <span class="c-muted">// clique em executar para ver a promise travar</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> "Iniciando..." e "Esperando..." imprimem</div>
+        <div class="tl-step"><div class="tl-dot dot-yellow"></div><span class="tl-time">3s</span> setTimeout roda, o log da pizza aparece</div>
+        <div class="tl-step"><div class="tl-dot dot-red"></div><span class="tl-time">∞</span> await nunca avança — resolve nunca foi chamado</div>
+      </div>
+      <div class="warn-box" style="margin-top:.8rem">
+        para corrigir: adicione <code>resolve("pizza de calabresa")</code> dentro do setTimeout, logo após o console.log. sem isso, o <code>console.log(pizza)</code> nunca vai rodar.
+      </div>
+      <div class="btn-row" style="margin-top:.8rem">
+        <button class="btn btn-red" onclick="runP3()">▶ Executar (bugado)</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== FETCH XANO ===================== -->
+<div class="page" id="fetch1">
+
+  <p class="section-label">// fetch + async/await — consumindo uma api real</p>
+
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-green">fetch · async/await · API Xano</span>
+      <h2 style="margin-top:.6rem">buscarMarcas() — dados da nuvem</h2>
+      <p>O <code style="font-family:var(--mono);font-size:.8em">fetch</code> retorna uma promise assim como o <code style="font-family:var(--mono);font-size:.8em">fazerCafe</code>. Precisa de dois <code style="font-family:var(--mono);font-size:.8em">await</code>: um pra esperar a resposta da rede, outro pra converter o body em JSON.</p>
+      <pre><span class="kw2">async function</span> <span class="fn">buscarMarcas</span>() {
+    <span class="kw">const</span> url = <span class="str">'https://x8ki-letl-twmt.n7.xano.io/api:ijUECDHD/marca'</span>;
+
+    <span class="cm">// await 1: espera a rede responder</span>
+    <span class="kw">const</span> resposta = <span class="kw2">await</span> <span class="fn">fetch</span>(url);
+
+    <span class="cm">// await 2: espera o body ser convertido em JSON</span>
+    <span class="kw">const</span> marcas = <span class="kw2">await</span> resposta.<span class="fn">json</span>();
+
+    <span class="kw">const</span> elementoLista =
+        document.<span class="fn">getElementById</span>(<span class="str">"lista"</span>);
+
+    elementoLista.<span class="mt">innerHTML</span> = <span class="str">""</span>;
+
+    marcas.<span class="fn">forEach</span>(marca => {
+        elementoLista.<span class="mt">innerHTML</span> +=
+            <span class="str">`&lt;li class="list-group-item"&gt;${marca.nome}&lt;/li&gt;`</span>;
+    });
+}</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo" style="min-height: 140px;">
+        <div class="demo-title">resultado ao vivo</div>
+        <ul id="lista" class="xano-list">
+          <li style="color:var(--muted);font-family:var(--mono);font-size:.78rem">aguardando clique...</li>
+        </ul>
+      </div>
+      <div class="timeline">
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">0ms</span> fetch dispara a requisição pra API</div>
+        <div class="tl-step"><div class="tl-dot dot-yellow"></div><span class="tl-time">~Xms</span> await pausa até o servidor responder</div>
+        <div class="tl-step"><div class="tl-dot dot-yellow"></div><span class="tl-time">+Yms</span> segundo await converte o body em JSON</div>
+        <div class="tl-step"><div class="tl-dot dot-green"></div><span class="tl-time">pronto</span> forEach monta cada item na lista</div>
+      </div>
+      <div class="btn-row" style="margin-top:.8rem">
+        <button class="btn btn-green" onclick="buscarMarcas()">▶ Buscar Dados da Nuvem</button>
+      </div>
+      <div class="log" id="log-fetch" style="margin-top:.6rem">aguardando...</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Paola · SENAI · Requisições Assíncronas em JavaScript</footer>
+
+<script>
+  // ===================== TABS =====================
+  function showTab(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function writeConsole(id, lines) {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    lines.forEach(([cls, txt, delay]) => {
+      setTimeout(() => {
+        const d = document.createElement('div');
+        d.innerHTML = `<span class="${cls}">${txt}</span>`;
+        el.appendChild(d);
+      }, delay);
+    });
+  }
+
+  // ===================== PROMISE 1 — currículo =====================
+  function runP1() {
+    writeConsole('con1', [
+      ['c-green',  '> "1. Mandei o currículo"',                         0],
+      ['c-green',  '> "3. Continuei estudando outras coisas..."',        80],
+      ['c-muted',  '// ... 3 segundos passam ...',                       200],
+      ['c-yellow', '> "2. A empresa respondeu: VOCÊ FOI CONTRATADO!"',   1800],
+    ]);
+  }
+
+  // ===================== PROMISE 2 — café =====================
+  function runP2() {
+    writeConsole('con2', [
+      ['c-green',  '> "Acordei e estou com sono..."',    0],
+      ['c-muted',  '// await fazerCafe() — pausado...',  100],
+      ['c-muted',  '// ... 2 segundos passam ...',       300],
+      ['c-yellow', '> "Café pronto e quentinho!"',       2000],
+      ['c-green',  '> "Agora sim, partiu trabalho!"',   2100],
+    ]);
+  }
+
+  // ===================== PROMISE 3 — pizza (bugada) =====================
+  function runP3() {
+    writeConsole('con3', [
+      ['c-green',  '> "Iniciando o processo de assar a pizza..."', 0],
+      ['c-green',  '> "Esperando o cliente escolher a pizza..."',  80],
+      ['c-muted',  '// await escolha() — pendente...',             200],
+      ['c-muted',  '// ... 3 segundos passam ...',                 400],
+      ['c-yellow', '> "Cliente escolheu a pizza de calabresa!"',   1800],
+      ['c-red',    '// promise nunca resolvida — await travado ∞', 1900],
+      ['c-red',    '// console.log(pizza) nunca vai executar',     2000],
+    ]);
+  }
+
+  // ===================== FETCH XANO =====================
+  async function buscarMarcas() {
+    const btn = document.querySelector('#fetch1 .btn-green');
+    const logEl = document.getElementById('log-fetch');
+    const lista = document.getElementById('lista');
+
+    btn.disabled = true;
+    lista.innerHTML = '<li style="font-family:var(--mono);font-size:.78rem;color:var(--muted)"><span class="loading-dot"></span>buscando dados...</li>';
+    logEl.textContent = 'fetch disparado — aguardando resposta da API...';
+
+    try {
+      const url = 'https://x8ki-letl-twmt.n7.xano.io/api:ijUECDHD/marca';
+      const resposta = await fetch(url);
+      const marcas = await resposta.json();
+
+      lista.innerHTML = '';
+      marcas.forEach(marca => {
+        lista.innerHTML += `<li>${marca.nome}</li>`;
+      });
+
+      logEl.textContent = `${marcas.length} marcas carregadas com sucesso`;
+      logEl.style.color = '#86efac';
+    } catch (erro) {
+      lista.innerHTML = '<li style="color:#f87171;font-family:var(--mono);font-size:.78rem">erro ao buscar — veja o console</li>';
+      logEl.textContent = 'erro na requisição: ' + erro.message;
+      logEl.style.color = '#f87171';
+      console.error('Erro no fetch:', erro);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
