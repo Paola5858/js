@@ -332,7 +332,7 @@
   <div class="header-meta">
     SENAI · Novo Ensino Médio<br>
     Manipulação de DOM<br>
-    Aulas 01 e 02
+    Aulas 01 a 06
   </div>
 </header>
 
@@ -343,6 +343,7 @@
   <button class="tab" onclick="showTab('aula03', this)">Aula 03 — Seleção · Manipulação · Evento</button>
   <button class="tab" onclick="showTab('aula04', this)">Aula 04 — DOM 2 & DOM 3</button>
   <button class="tab" onclick="showTab('aula05', this)">Aula 05 — Desafio DOM</button>
+  <button class="tab" onclick="showTab('aula06', this)">Aula 06 — Seletores Práticos</button>
 </div>
 
 <!-- ===================== AULA 01 ===================== -->
@@ -809,223 +810,60 @@ botao.<span class="fn">addEventListener</span>(<span class="str">'click'</span>,
 
 </div>
 
-<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 a 05</footer>
+<!-- ===================== AULA 06 ===================== -->
+<div class="page" id="aula06">
 
-<script>
-  // ===================== TABS =====================
-  function showTab(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-  }
+  <p class="section-label">// 06 — Exemplos práticos de seletores e manipulação</p>
 
-  // ===================== UTILS =====================
-  function flash(el) {
-    el.classList.remove('highlight-flash');
-    void el.offsetWidth;
-    el.classList.add('highlight-flash');
-  }
+  <div class="card">
+    <div class="card-left">
+      <span class="badge badge-orange">Seletores Múltiplos</span>
+      <h2 style="margin-top:.6rem">Manipulação com diferentes seletores</h2>
+      <p>Este código demonstra o uso de <code style="font-family:var(--mono)">getElementById</code>, <code style="font-family:var(--mono)">getElementsByClassName</code>, <code style="font-family:var(--mono)">querySelector</code> e <code style="font-family:var(--mono)">querySelectorAll</code> para selecionar e manipular elementos.</p>
+      <pre><span class="kw">const</span> nome = document.<span class="fn">getElementById</span>(<span class="str">"nome-player"</span>);
+nome.<span class="mt">innerText</span> = <span class="str">"paola"</span>;
 
-  function log(id, msg) {
-    document.getElementById(id).textContent = msg;
-  }
+<span class="kw">const</span> itens = document.<span class="fn">getElementsByClassName</span>(<span class="str">"item-inventario"</span>);
+itens[0].<span class="mt">style</span>.color = <span class="str">"gold"</span>;
 
-  // ===================== AULA 01 =====================
+<span class="kw">const</span> botao = document.<span class="fn">querySelector</span>(<span class="str">".btn-enviar"</span>);
+botao.<span class="mt">textContent</span> = <span class="str">"Carregando..."</span>;
 
-  // querySelector - primeira h1
-  function runQuerySelector() {
-    let el = document.getElementById('el-h1');
-    el.textContent = 'Novo texto 1';
-    flash(el);
-    log('log-qs', 'querySelector("h1") → textContent alterado');
-  }
+<span class="kw">const</span> todosOsCards = document.<span class="fn">querySelectorAll</span>(<span class="str">".card"</span>);
+todosOsCards.<span class="fn">forEach</span>((card) => {
+  card.<span class="mt">style</span>.border = <span class="str">"2px solid red"</span>;
+});</pre>
+    </div>
+    <div class="card-right">
+      <div class="demo">
+        <div class="demo-title">resultado ao vivo</div>
+        <h1 id="nome-player" class="demo-el">Nome do Jogador</h1>
+        <ul>
+          <li class="item-inventario demo-el">Espada</li>
+          <li class="item-inventario demo-el">Escudo</li>
+        </ul>
+        <button class="btn-enviar btn demo-el">Enviar</button>
+        <div class="card demo-el" style="border: 2px solid var(--border); padding: 1rem; margin-top: 0.5rem;">Exemplo de Card</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-red" onclick="runAula06()">▶ Executar Código</button>
+        <button class="reset-btn" onclick="resetAula06()">↺ reset</button>
+      </div>
+      <div class="log" id="log-aula06">aguardando...</div>
+    </div>
+  </div>
 
-  // querySelectorAll - todos os p
-  function runQuerySelectorAll() {
-    let els = document.querySelectorAll('#aula01 p.demo-el');
-    els[0].textContent = 'Novo parágrafo [0]';
-    els[1].textContent = 'Novo parágrafo [1]';
-    flash(els[0]); flash(els[1]);
-    log('log-qsa', `querySelectorAll("p") → NodeList com ${els.length} itens alterados`);
-  }
+</div>
 
-  // getElementById
-  function runGetElementById() {
-    let el = document.getElementById('el-txt2');
-    el.textContent = 'Novo texto 2';
-    flash(el);
-    log('log-id', 'getElementById("txt2") → elemento único selecionado');
-  }
+<footer>Paola · SENAI · DOM em JavaScript · Aulas 01 a 06</footer>
 
-  // getElementsByClassName + getElementsByTagName
-  function runClasseTag() {
-    let porClasse = document.getElementsByClassName('subtitulo');
-    porClasse[0].textContent = 'Novo parágrafo';
-    flash(porClasse[0]);
-
-    let porTag = document.getElementsByTagName('h2');
-    let h2el = document.getElementById('el-h2');
-    h2el.textContent = 'Novo Paragrafo 3';
-    flash(h2el);
-
-    log('log-ct', 'ClassName[0] e TagName[0] → ambos alterados');
-  }
-
-  function resetAula01() {
-    document.getElementById('el-h1').textContent = 'Texto 1';
-    document.getElementById('el-p1').textContent = 'Pagragráfo 1';
-    document.getElementById('el-p2').textContent = 'Pagragráfo 2';
-    document.getElementById('el-txt2').textContent = 'Texto 2';
-    document.getElementById('el-subtitulo').textContent = 'Pagragráfo 1 (classe: subtitulo)';
-    document.getElementById('el-h2').textContent = 'Pagragráfo 3';
-    ['log-qs','log-qsa','log-id','log-ct'].forEach(id => log(id, 'aguardando...'));
-  }
-
-  // ===================== AULA 02 =====================
-
-  function runInnerHTML() {
-    let titulo = document.getElementById('demo-titulo');
-    titulo.innerHTML = 'Coloquei o novo título';
-    flash(titulo);
-    log('log-html', 'innerHTML = "Coloquei o novo título"');
-  }
-
-  function runSetAttribute() {
-    let imagem = document.getElementById('demo-foto2');
-    imagem.setAttribute('src', 'https://picsum.photos/200/200');
-    flash(imagem);
-    log('log-attr', 'setAttribute("src", "https://picsum.photos/200/200")');
-  }
-
-  function runStyleColor() {
-    let el = document.getElementById('el-style-demo');
-    el.style.color = 'red';
-    el.style.backgroundColor = '';
-    flash(el);
-    log('log-style', 'style.color = "red"');
-  }
-
-  function runStyleBg() {
-    let el = document.getElementById('el-style-demo');
-    el.style.backgroundColor = 'black';
-    el.style.color = 'white';
-    flash(el);
-    log('log-style', 'style.backgroundColor = "black"');
-  }
-
-  function runStyleBoth() {
-    let el = document.getElementById('el-style-demo');
-    el.style.color = 'red';
-    el.style.backgroundColor = 'black';
-    flash(el);
-    log('log-style', 'color: red + backgroundColor: black');
-  }
-
-  function setClasse(nome) {
-    let el = document.getElementById('el-container');
-    el.setAttribute('class', nome);
-    el.textContent = `div.container → classe "${nome}" aplicada`;
-    flash(el);
-    log('log-class', `setAttribute("class", "${nome}") → .${nome} do CSS aplicada`);
-  }
-
-  function removeClasse() {
-    let el = document.getElementById('el-container');
-    el.removeAttribute('class');
-    el.style.color = '';
-    el.textContent = 'div.container — sem classe';
-    flash(el);
-    log('log-class', 'removeAttribute("class") → classe removida');
-  }
-
-  // ===================== AULA 03 =====================
-  function runExercicio() {
-    // ① seleção
-    let meuTitulo = document.getElementById('ex-titulo');
-    // ② manipulação
-    meuTitulo.textContent  = 'O DOM FUNCIONOU!';
-    meuTitulo.style.color    = 'red';
-    meuTitulo.style.fontSize = '50px';
-    flash(meuTitulo);
-    log('log-ex', 'O botão foi clicado e o título mudou!');
-  }
-
-  function resetExercicio() {
-    let el = document.getElementById('ex-titulo');
-    el.textContent = 'Texto Original';
-    el.style.color = '';
-    el.style.fontSize = '';
-    log('log-ex', 'aguardando o clique...');
-  }
-
-  // ===================== AULA 04 =====================
-  function runDom2() {
-    let t = document.getElementById('d2-titulo');
-    t.textContent  = 'O DOM FUNCIONOU!';
-    t.style.color    = 'red';
-    t.style.fontSize = '50px';
-    flash(t);
-    log('log-d2', 'textContent + style.color + style.fontSize alterados');
-  }
-
-  function resetDom2() {
-    let t = document.getElementById('d2-titulo');
-    t.textContent = 'Texto Original';
-    t.style.color = '';
-    t.style.fontSize = '';
-    log('log-d2', 'aguardando o clique...');
-  }
-
-  let d3Dark = false;
-  function runDom3() {
-    d3Dark = !d3Dark;
-    let box = document.getElementById('d3-box');
-    let btn = document.getElementById('d3-btn');
-    box.style.background = d3Dark ? '#1a1a1a' : '#fff';
-    box.style.color      = d3Dark ? '#f5f0e8' : '#1a1a1a';
-    btn.textContent = d3Dark ? '☀️ Alternar Tema' : '🌙 Alternar Tema';
-    flash(box);
-    log('log-d3', d3Dark
-      ? 'classList.toggle → classe "modo-escuro" ADICIONADA'
-      : 'classList.toggle → classe "modo-escuro" REMOVIDA');
-  }
-
-  // ===================== AULA 05 =====================
-  function runDesafio() {
-    let inputNome     = document.getElementById('d5-input');
-    let spanResultado = document.getElementById('d5-resultado');
-    if (!inputNome.value.trim()) {
-      log('log-d5', 'campo vazio — digite um nome primeiro!');
-      return;
-    }
-    spanResultado.textContent = inputNome.value;
-    spanResultado.style.color = 'green';
-    flash(spanResultado);
-    log('log-d5', 'O nome exibido foi: ' + inputNome.value);
-  }
-
-  function resetDesafio() {
-    document.getElementById('d5-input').value = '';
-    let s = document.getElementById('d5-resultado');
-    s.textContent = '...';
-    s.style.color = '';
-    log('log-d5', 'aguardando o clique...');
-  }
-
-  function resetAula02() {
-    document.getElementById('demo-titulo').innerHTML = 'Seleção CSS Javascript';
-    document.getElementById('demo-titulo').style.color = '';
-    document.getElementById('demo-titulo').style.backgroundColor = '';
-    document.getElementById('demo-foto').src = '';
-    document.getElementById('demo-foto2').src = '';
-    document.getElementById('preview-inner').style.backgroundColor = '';
-    document.getElementById('el-style-demo').style.color = '';
-    document.getElementById('el-style-demo').style.backgroundColor = '';
-    document.getElementById('el-style-demo').textContent = 'Seleção CSS Javascript';
-    ['log-html','log-attr','log-style','log-class'].forEach(id => log(id, 'aguardando...'));
-  }
-</script>
+<script src="script.js"></script>
+<script src="aula01.js"></script>
+<script src="aula02.js"></script>
+<script src="aula03.js"></script>
+<script src="aula04.js"></script>
+<script src="aula05.js"></script>
+<script src="aula06.js"></script>
 
 </body>
 </html>
